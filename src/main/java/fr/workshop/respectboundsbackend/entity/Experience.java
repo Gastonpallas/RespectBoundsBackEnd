@@ -19,5 +19,5 @@ public class Experience {
     private Long id;
     private String text;
     private ExperienceType type;
-
+    private int degre;
 }
