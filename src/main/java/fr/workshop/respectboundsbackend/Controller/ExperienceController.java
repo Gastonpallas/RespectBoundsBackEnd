@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(path = "api/workshop")
+@RequestMapping(path = "api/workshop/experience")
 @CrossOrigin
 public class ExperienceController {
 
@@ -31,8 +31,18 @@ public class ExperienceController {
         return new ResponseEntity<Experience>(HttpStatusCode.valueOf(204));
     }
 
+    @GetMapping("/getMoyenne")
+    public ResponseEntity<Integer> getMoyenneExp(@RequestParam Long id){
+        return experienceService.getMoyenneExp(id);
+    }
+
+
     @PostMapping
     public ResponseEntity<Experience> addExperience(@RequestBody Experience experience){
         return experienceService.addExperience(experience);
     }
+
+
+
+
 }
