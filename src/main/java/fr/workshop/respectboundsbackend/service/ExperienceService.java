@@ -4,7 +4,6 @@ import fr.workshop.respectboundsbackend.entity.Experience;
 import fr.workshop.respectboundsbackend.entity.Reponse;
 import fr.workshop.respectboundsbackend.repo.ExperienceRepository;
 import fr.workshop.respectboundsbackend.repo.ReponseRepository;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,10 +35,10 @@ public class ExperienceService {
 
     public ResponseEntity<Experience> addExperience(Experience experience) {
         if(experience == null || experience.getText() == null || experience.getType() == null ){
-            return new ResponseEntity<Experience>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         experienceRepository.save(experience);
-        return new ResponseEntity<Experience>(HttpStatus.CREATED);
+        return new ResponseEntity<>(experience, HttpStatus.CREATED);
     }
 
     public ResponseEntity<Integer> getMoyenneExp(Long id) {
@@ -49,21 +48,47 @@ public class ExperienceService {
         if(experience.isPresent()){
             List<Reponse> listOfReponse = reponseRepository.findByExperience(experience.get());
             if(!listOfReponse.isEmpty()){
-                int total = 0;
-
-                for (Reponse reponse : listOfReponse) {
-                    total += reponse.getScore();
-                }
-                Integer moyenne =  total/ listOfReponse.size();
+                Integer moyenne = calculMoyenne(listOfReponse);
                 return new ResponseEntity<>(moyenne, HttpStatus.OK);
-
             }else{
-                return new ResponseEntity<Integer>(HttpStatus.NO_CONTENT);
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
 
         }else {
-            return new ResponseEntity<Integer>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
         }
+    }
+
+
+    private Integer calculMoyenne(List<Reponse> list){
+        int total = 0;
+
+        for (Reponse reponse : list) {
+            total += reponse.getScore();
+        }
+        return  total / list.size();
+    }
+
+    public ResponseEntity<Integer> getMoyenneTotal(List<Long> listId) {
+
+        if (!listId.isEmpty()){
+            int totalTotal = 0;
+            for(Long idExp : listId){
+                Optional<Experience> experienceOptional = experienceRepository.findById(idExp);
+                Experience experience = new Experience();
+                if (experienceOptional.isPresent()){
+                    experience = experienceOptional.get();
+                }
+                List<Reponse> listOfReponse = reponseRepository.findByExperience(experience);
+                if(!listOfReponse.isEmpty()) {
+                    totalTotal += calculMoyenne(listOfReponse);
+                }
+            }
+            Integer moyenneTotal = totalTotal / listId.size();
+
+            return new ResponseEntity<>(moyenneTotal, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

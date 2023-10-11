@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -40,6 +42,13 @@ public class ExperienceController {
     @PostMapping
     public ResponseEntity<Experience> addExperience(@RequestBody Experience experience){
         return experienceService.addExperience(experience);
+    }
+
+    @PostMapping("/getMoyenneTotal")
+    public ResponseEntity<Integer> getMoyenneTotal(@RequestBody Map<String, List<Long>> requestBody) {
+        List<Long> experienceIds = requestBody.get("experienceIds");
+
+        return experienceService.getMoyenneTotal(experienceIds);
     }
 
 
