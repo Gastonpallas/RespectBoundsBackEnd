@@ -18,6 +18,6 @@ public class Experience {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "name_sequence")
     private Long id;
     private String text;
-    private ExperienceType type;
+    private String type;
     private int degre;
 }

@@ -30,4 +30,9 @@ public class ExperienceController {
         }
         return new ResponseEntity<Experience>(HttpStatusCode.valueOf(204));
     }
+
+    @PostMapping
+    public ResponseEntity<Experience> addExperience(@RequestBody Experience experience){
+        return experienceService.addExperience(experience);
+    }
 }
